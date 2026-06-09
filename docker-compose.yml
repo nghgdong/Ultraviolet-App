@@ -11,15 +11,6 @@ services:
       - "8080"
     networks:
       - dokploy-network
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.ultraviolet.rule=Host(`${DOMAIN}`)"
-      - "traefik.http.routers.ultraviolet.entrypoints=websecure"
-      - "traefik.http.routers.ultraviolet.tls.certresolver=letsencrypt"
-      - "traefik.http.services.ultraviolet.loadbalancer.server.port=8080"
-      # WebSocket support for Wisp
-      - "traefik.http.middlewares.ultraviolet-ws.headers.customrequestheaders.Connection=keep-alive, Upgrade"
-      - "traefik.http.routers.ultraviolet.middlewares=ultraviolet-ws"
 
 networks:
   dokploy-network:
