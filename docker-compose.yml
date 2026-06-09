@@ -1,12 +1,26 @@
 services:
   ultraviolet:
-    ports:
-      - 8080:8080
     build:
       context: .
     container_name: ultraviolet
     restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=8080
+    expose:
+      - "8080"
+    networks:
+      - dokploy-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ultraviolet.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.ultraviolet.entrypoints=websecure"
+      - "traefik.http.routers.ultraviolet.tls.certresolver=letsencrypt"
+      - "traefik.http.services.ultraviolet.loadbalancer.server.port=8080"
+      # WebSocket support for Wisp
+      - "traefik.http.middlewares.ultraviolet-ws.headers.customrequestheaders.Connection=keep-alive, Upgrade"
+      - "traefik.http.routers.ultraviolet.middlewares=ultraviolet-ws"
 
 networks:
-  default:
-    name: ultraviolet
+  dokploy-network:
+    external: true
